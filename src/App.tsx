@@ -6,6 +6,15 @@ import {MyContext} from './CardChoicesContext';
 import DropDown from './DropDown'
 import Flashcards from './Flashcards';
 
+
+
+/**order of operations
+ * select what you want from the drop down lists
+ * those selections go to the flashcard app
+ * inside flashcard you display the choices and 
+ * there are buttons to move through the deck and 
+ * to show the back of the card
+ */
 function App() {
 
  
@@ -55,12 +64,17 @@ function App() {
 
   */
   const [front , setFront] = useState("nothing");
+  const [back , setBack] = useState("nothing");
 
   let choice = front;
+  let choice2 = back;
   function handleChoice(choice){
     setFront(choice)
 
   };
+  function handleChoice2(choice2){
+    setBack(choice2);
+  }
       
 
 
@@ -74,8 +88,9 @@ function App() {
       </ul>*/}
 
      front <DropDown list={selectionList} chooseFunct={handleChoice}/>
-     front is {front};
-     <Flashcards deck = {drugs} choice = {choice}/>
+     back  <DropDown list={selectionList} chooseFunct={handleChoice2}/>
+
+     <Flashcards deck = {drugs} choice = {choice} choice2 = {choice2}/>
      
     </div>
   )

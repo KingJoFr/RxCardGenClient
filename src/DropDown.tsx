@@ -21,9 +21,8 @@ const Dropdown = ({ list, chooseFunct }) => {
   const [choice, setChoice] = useState("choice");
 
   const makeChoice = (event) => {
-    console.log("event", event);
-    console.log("event.target", event.target)
-    console.log("event.target.value", event.target.value);
+  
+    
     setChoice(event.target.value);
     chooseFunct(event.target.value); // pass the choice to the parent
   }
