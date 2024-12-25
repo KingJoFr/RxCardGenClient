@@ -9,24 +9,35 @@ import ShowButton from './ShowButton'
   that object to an array to iterate through with the front 
   visible and the back with style visibility: hidden then 
   style visibility: visible with a button
+  //actually I discovered that it's not necessary to create a whole new object
   
   order of operations
-  useEffect runs when card changes. which changes when the back is chosen or forward or back button pressed
-  which changes the position variable.
+  1choice 1 and 2 are made
+  2useEffect runs when card changes which sets the back to hidden.
+  3when show is pressed className of back div is changed to make it visible
+  4forward and back buttons can be pressed to iterate through the deck
   
   const card = deck[position][choice2];
   choice 2 is the back
   deck is imported
   
   once the choices are made we have to figure out how to render what we get
-  it may be a string, array, or object.  
+  it may be a string, array, or object, or nothing at the start  
   So the idea is that useeffect runs when user makes the choices.
   in useeffect we check with if statements the type
+  //actually ended up creating a function createCardBack() that checks all that in the div for back of card
 
   in the return we check if card has a value
   which it doesn't have until choice 1 and 2 are made
-  then if it does showBack() runs if it doesn't which it doesn't at the beginning
-  then it says empty deck
+  then if it does createCardBack() runs, if it doesn't which it doesn't at the beginning
+  then it says "empty deck"
+  
+  in createCardBack if it's a string then just return card
+  if array then maps it and returns an unordered list of each item
+  if object then arrays are made of keys and values then those
+  are rendered as an unordered list
+  
+
   */
 
   
@@ -34,72 +45,24 @@ const limit = drugs.length;
 const Flashcards = ({choice, choice2, deck}) =>{
     
 
-    const [position, setPosition] = useState(0); //position in the deck
-    const [isArray, setIsArray] = useState(false); //check if array to list out each thing
-    const [listArr, setListArr] = useState("empty arr");//contains the actual array turned into a list
-    const [isType, setIsType] = useState("no type");// check if choice is string or array or object
-    const card = deck[position][choice2]; 
-    //const [card, setCard] = useState(deck[position][choice2]);
     const [visible, setVisible] = useState(false);  //sets the visiblity of back
-    
+    const [position, setPosition] = useState(0); //position in the deck
+    const card = deck[position][choice2]; 
+
     let cardKeys = [];
     let cardValues = [];
     const [display, setDisplay] = useState(['display'])
     const [rlimit, setRLimit] = useState(0);
+
+
     function changePosition(value){
-        setPosition(value);
-    }
-
-    
-
-
-    function flistArr(){ //takes an array and creates a list. react prints it as all one string
-    
-        try{
-        if(isArray){
-            
-            return(
-                <ul>
-                    {card.map((item,index)=>(
-                    <li key={index}>
-                        {item}
-                
-                    </li>
-                    ))}
-                </ul>
-            
-            )
-        
-        
+        if(value<0){
+            value = 0;
+            setPosition(value);
         }else{
-        
-            return(<p>empty</p>)
-        };
-        }catch(e){
-            console.log("error",e)
+            setPosition(value);
         }
     }
-
-    function checkType(){
-
-        
-        try{
-         switch(typeof card){
-            case "object": if(Array.isArray(card)){
-                            setIsType("array");
-                           }else{
-                            setIsType('object')
-                
-                           };
-            break;
-            default: setIsType("string");
-         }
-        }catch(e){
-            console.log("error",e)
-        }
-    }
-
-   
 
     function showbtn(value){
         try{
@@ -114,18 +77,28 @@ const Flashcards = ({choice, choice2, deck}) =>{
         }
     }
     
-    function showBack(){
+    function createCardBack(){
         
         
         try{
-        if(isType ==="string"){
-            console.log("type is string")
+        if(typeof card == "string"){ /* was if(isType == "string") but noticed was not running useffect going from strings to object*/
+            
             return(<p>{card}</p>)
         }else if(Array.isArray(card)){
         
             
-            return(<div>{flistArr()}</div>)
-        }else{//type is object
+            return(<div>
+                <ul>
+                    {card.map((item,index)=>(
+                    <li key={index}>
+                        {item}
+                
+                    </li>
+                    ))}
+                </ul>
+            </div>
+            )
+        }else if(typeof card == "object"){
         
             cardKeys = Object.keys(card);
             cardValues = Object.values(card);
@@ -134,9 +107,6 @@ const Flashcards = ({choice, choice2, deck}) =>{
             /*const count = rlimit;
             setRLimit(1)
              This code causes an infinite loop*/
-            
-            
-        
             
             return(
                 <ul>
@@ -150,6 +120,8 @@ const Flashcards = ({choice, choice2, deck}) =>{
            
             )
                 
+        }else{
+            return("empty deck")
         }
     }catch(e){
         console.log("error",e)
@@ -160,51 +132,26 @@ const Flashcards = ({choice, choice2, deck}) =>{
 
     useEffect(()=> {
         console.log("useEffect running")
-        try{
+        setVisible(false);
         
     
         
-        if(card){
-            
-            if(typeof card == "string"){
-                
-                setIsArray(false);
-                //checkType();
-                setIsType('string')
-                //flistArr();
-
-            }
-            else if(Array.isArray(card)){
-                
-                setIsArray(true)
-                setIsType("array"); 
-                //flistArr();
-                
-            }else{
-                
-                setIsArray(false);
-                setIsType('object')
-                //setCardKeys(Object.keys(card));
-                //setCardValues(Object.values(card))
-        
-                //flistArr();
-                
-
-            }
-        }
-    }catch(e){console.log("error",e)}}
+       }
     , [choice,choice2])
-    
+    /*I realized I don't even need this.  Actually I found a use for useEffect
+    I noticed that when changing the choice for back if its visible it stays visible */
 
     
     
    
-
+    //main return 
     return(
         <div>
             
             <p>front: {(deck[position][choice])? deck[position][choice]: "empty deck"}</p>
-            <div className={`${visible ? "cardVisible": "cardHidden" }`}>back: { card? showBack() : "empty deck"}</div>
+            <div className={`${visible ? "cardVisible": "cardHidden" }`}>{/*whether visible or hidden depends on showbutton*/}
+                back: { card? createCardBack() : "empty deck"}{/*if card is something then run createCardBack otherwise write "empty deck" */}
+                </div>
             <IncButton limit ={limit} setVis={showbtn} position={position} setPosition={changePosition} purpose="forward" incDec={1}/>
             <IncButton limit ={limit} setVis={showbtn} position={position} setPosition={changePosition} purpose="back" incDec={-1}/>
             <ShowButton setVisible={showbtn} visible={visible} />
