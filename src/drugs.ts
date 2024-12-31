@@ -1,4 +1,4 @@
-
+ 
  
  
  interface Pharmacokinetics {
@@ -48,7 +48,7 @@
  }
  
 
-const drugs: DrugSchema[] = [{
+export const drugs: DrugSchema[] = [{
     
     GenericName:"Metformin",
     BrandNames:[

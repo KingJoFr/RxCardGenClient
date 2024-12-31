@@ -1,8 +1,11 @@
 import  { useState, useEffect } from 'react';
-import drugs from './drugs.ts';
+import { drugs, DrugSchema } from './drugs.ts';
+
 import  IncButton  from './IncButton';
 import ShowButton from './ShowButton'
-/*after choices made for front and back
+/*
+https://stackoverflow.com/questions/62438346/how-to-dynamically-access-object-property-in-typescript
+after choices made for front and back
   you have to create the deck.  to create the deck you have
   to go through the general deck and select the 
   properties and put them in a new object then push
@@ -39,23 +42,30 @@ import ShowButton from './ShowButton'
   
 
   */
+  //const DrugSchemaKeyObj = drugs[0]; // create instance of object to create keys for type 
+  type DrugSchemaKeyType = keyof DrugSchema;
 
   
-const limit = drugs.length;
-const Flashcards = ({choice, choice2, deck}) =>{
+const limit: number = drugs.length;
+interface Props{
+    choice: DrugSchemaKeyType,
+    choice2: DrugSchemaKeyType,
+    deck: DrugSchema[]
+}
+const Flashcards = ({choice, choice2, deck}: Props) =>{
     
 
-    const [visible, setVisible] = useState(false);  //sets the visiblity of back
-    const [position, setPosition] = useState(0); //position in the deck
-    const card = deck[position][choice2]; 
+    const [visible, setVisible] = useState<boolean>(false);  //sets the visiblity of back
+    const [position, setPosition] = useState<number>(0); //position in the deck
+    const backCard: string | string[] | object | undefined = deck[position][choice2]; 
+    const frontCard: string | string[] | object | undefined = deck[position][choice]
+    let cardKeys: string[] = [];
+    let cardValues: string[] = [];
+    //const [display, setDisplay] = useState<string[]>(['display'])
+    //const [rlimit, setRLimit] = useState(0);
 
-    let cardKeys = [];
-    let cardValues = [];
-    const [display, setDisplay] = useState(['display'])
-    const [rlimit, setRLimit] = useState(0);
 
-
-    function changePosition(value){
+    function changePosition(value: number){
         if(value<0){
             value = 0;
             setPosition(value);
@@ -64,7 +74,7 @@ const Flashcards = ({choice, choice2, deck}) =>{
         }
     }
 
-    function showbtn(value){
+    function showbtn(value:boolean){
         try{
         if(visible ){
             setVisible(value)
@@ -77,19 +87,22 @@ const Flashcards = ({choice, choice2, deck}) =>{
         }
     }
     
-    function createCardBack(){
+    function createCardBack(card: string|string[]|object){
+        
+        const cardValuesTemp: string |string[]|object = Object.values(card)[0];
+        console.log("top of createCardBack cardkeystemp is ", cardValuesTemp)
         
         
         try{
-        if(typeof card == "string"){ /* was if(isType == "string") but noticed was not running useffect going from strings to object*/
-            
-            return(<p>{card}</p>)
-        }else if(Array.isArray(card)){
+        if(typeof cardValuesTemp == "string"){ /* was if(isType == "string") but noticed was not running useffect going from strings to object*/
+            console.log("1 typeof card is string")
+            return(<p>{cardValuesTemp}</p>)
+        }else if(Array.isArray(cardValuesTemp)){
         
-            
+            console.log("2 type of card is array");
             return(<div>
                 <ul>
-                    {card.map((item,index)=>(
+                    {cardValuesTemp.map((item,index)=>(
                     <li key={index}>
                         {item}
                 
@@ -99,9 +112,9 @@ const Flashcards = ({choice, choice2, deck}) =>{
             </div>
             )
         }else if(typeof card == "object"){
-        
-            cardKeys = Object.keys(card);
-            cardValues = Object.values(card);
+            console.log("3 type of card is object")
+            cardKeys = Object.keys(cardValuesTemp);
+            cardValues = Object.values(cardValuesTemp);
         
             
             /*const count = rlimit;
@@ -121,6 +134,7 @@ const Flashcards = ({choice, choice2, deck}) =>{
             )
                 
         }else{
+            console.log("4 final else type ", typeof card)
             return("empty deck")
         }
     }catch(e){
@@ -148,9 +162,9 @@ const Flashcards = ({choice, choice2, deck}) =>{
     return(
         <div>
             
-            <p>front: {(deck[position][choice])? deck[position][choice]: "empty deck"}</p>
+            <div>front: { frontCard ? createCardBack({frontCard}): "empty deck"}</div>{/*deck[position][choice]*/}
             <div className={`${visible ? "cardVisible": "cardHidden" }`}>{/*whether visible or hidden depends on showbutton*/}
-                back: { card? createCardBack() : "empty deck"}{/*if card is something then run createCardBack otherwise write "empty deck" */}
+                back: { backCard? createCardBack({backCard}) : "empty deck"}{/*if card is something then run createCardBack otherwise write "empty deck" */}
                 </div>
             <IncButton limit ={limit} setVis={showbtn} position={position} setPosition={changePosition} purpose="forward" incDec={1}/>
             <IncButton limit ={limit} setVis={showbtn} position={position} setPosition={changePosition} purpose="back" incDec={-1}/>

@@ -1,4 +1,9 @@
-const ShowButton = ({setVisible, visible}) =>{
+interface Props{
+    setVisible: (param: boolean) => void,
+    visible: boolean,
+}
+
+const ShowButton = ({setVisible, visible}: Props) =>{
    
 
     function changeVis(){

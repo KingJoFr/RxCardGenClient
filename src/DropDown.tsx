@@ -1,33 +1,33 @@
-import {useState, useContext} from 'react';
-import {MyContext} from "./CardChoicesContext";
-
+import {useState, ChangeEventHandler} from "react";
+//import {DrugSchema} from "./drugs.ts"
+//import {DrugSchemaKeyType} from "./App.tsx"
 /*to do how to create an array of options 
- from the keys of drugschema object. possible take the keys from the first object in the array*/
-type Options = {
-  value: string;
-};
+ from the keys of drugschema object. possible take the keys from the first object in the array
+ 
+ well now that I know that I can do something: keyof DrugSchema I think I can use that here*/
+//type Options 
 
-/*type DropdownProps = {
-  sels: Option[];
+type Props = {
+  list: string[],
+  chooseFunct:(param: string) => void,
   //onSelect: (value: string) => void;
 };
-*/
 
 
-const Dropdown = ({ list, chooseFunct }) => {
+
+const Dropdown = ({ list, chooseFunct }:Props) => {
   
   
   //console.log("whichChoice", whichChoice)
   const [choice, setChoice] = useState("choice");
 
-  const makeChoice = (event) => {
-  
+  const makeChoice: ChangeEventHandler<HTMLSelectElement> = (event) => {
     
     setChoice(event.target.value);
     chooseFunct(event.target.value); // pass the choice to the parent
   }
 
-  const arr = Object.values(list);
+  //const arr = Object.values(list);
   
 
  
