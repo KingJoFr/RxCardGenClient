@@ -1,6 +1,4 @@
-import { useState,
-  
-} from 'react'
+import { useState} from 'react'
 import drugs from './drugs.ts' //importing ts array of objects
 import {DrugSchema} from './drugs.ts'// importing the interface of the above drugs.ts
 import './App.css'
