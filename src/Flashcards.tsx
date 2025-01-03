@@ -1,5 +1,5 @@
 import  { useState, useEffect } from 'react';
-import { drugs, DrugSchema } from './drugs.ts';
+import { drugs, DrugSchema } from './drugs2.ts';
 
 import  IncButton  from './IncButton';
 import ShowButton from './ShowButton'
