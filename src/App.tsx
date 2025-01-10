@@ -88,7 +88,7 @@ function App() {
   return (
     
     <div>
-     <h1>Pharmacy Flashcards</h1>
+     <h1>Pharmacy Flashcards V2</h1>
      <h2 style={{color: "red"}}>DISCLAIMER: The information contained in this app is AI generated and has not been medically reviewed.  Use at your own risk</h2>
 
      front <DropDown list={selectionList} chooseFunct={chooseFront}/>
