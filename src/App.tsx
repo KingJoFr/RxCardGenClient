@@ -81,17 +81,15 @@ function App() {
   function chooseBack(value: string){
     setBack(value);
   }
-      
+  
+
 
 
   return (
     
     <div>
-     {/* <ul>
-      {cards.map((card) =>{
-        return <li key={card.GenericName}>{card.BrandNames}</li>;
-      })}
-      </ul>*/}
+     <h1>Pharmacy Flashcards</h1>
+     <h2 style={{color: "red"}}>DISCLAIMER: The information contained in this app is AI generated and has not been medically reviewed.  Use at your own risk</h2>
 
      front <DropDown list={selectionList} chooseFunct={chooseFront}/>
      back  <DropDown list={selectionList} chooseFunct={chooseBack}/>
